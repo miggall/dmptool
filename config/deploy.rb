@@ -1,14 +1,23 @@
 # frozen_string_literal: true
 
-# Default branch is :master
-ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp unless ENV["BRANCH"]
-set :branch, ENV["BRANCH"] if ENV["BRANCH"]
+# set vars from ENV
+set :application,      ENV['CAPISTRANO_APP']  || 'DMPTool'
+set :user,             ENV['USER']            || 'dmp'
+set :deploy_to,        ENV['DEPLOY_TO']       || '/dmp/apps/dmptool'
+set :rails_env,        ENV['RAILS_ENV']       || 'production'
+set :repo_url,         ENV['REPO_URL']        || 'https://github.com/cdluc3/dmptool.git'
+set :branch,           ENV['BRANCH']          || 'master'
+set :config_branch,    ENV['CONFIG_BRANCH']   || "uc3-dmpx2-prd"
+#ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp unless ENV["BRANCH"]
 
-set :default_env, { path: "/dmp/local/bin:$PATH" }
+set :share_to,         "#{fetch(:deploy_to)}/shared"
+set :default_env,      { path: "$PATH" }
+puts "default_env:"
+puts fetch(:default_env).to_s
+puts "deploy_path: #{deploy_path}"
 
 # Gets the current Git tag and revision
 set :version_number, `git describe --tags`
-
 # Default environments to skip
 set :bundle_without, %w[puma pgsql thin rollbar test].join(" ")
 
@@ -34,10 +43,10 @@ append :linked_dirs,
 set :keep_releases, 5
 
 namespace :deploy do
-  before :deploy, "config:install_shared_dir"
+  #before :deploy, "config:install_shared_dir"
   after :deploy, "git:version"
   after :deploy, "cleanup:remove_example_configs"
-  after :deploy, "cleanup:restart_passenger"
+  #after :deploy, "cleanup:restart_passenger"
 end
 
 namespace :config do
@@ -71,16 +80,16 @@ namespace :cleanup do
     end
   end
 
-  desc "Restart Phusion Passenger"
-  task :restart_passenger do
-    on roles(:app), wait: 5 do
-      execute "cd /apps/dmp/init.d && ./passenger stop"
-      execute "cd /apps/dmp/init.d && ./passenger start"
-    end
-  end
+  #desc "Restart Phusion Passenger"
+  #task :restart_passenger do
+  #  on roles(:app), wait: 5 do
+  #    execute "cd /apps/dmp/init.d && ./passenger stop"
+  #    execute "cd /apps/dmp/init.d && ./passenger start"
+  #  end
+  #end
 
-  after :restart_passenger, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-    end
-  end
+  #after :restart_passenger, :clear_cache do
+  #  on roles(:web), in: :groups, limit: 3, wait: 10 do
+  #  end
+  #end
 end
