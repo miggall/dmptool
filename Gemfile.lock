@@ -51,6 +51,8 @@ GEM
       rake (>= 10.4, < 14.0)
     annotate_gem (0.0.14)
       bundler (>= 1.1)
+    anyway_config (2.1.0)
+      ruby-next-core (>= 0.11.0)
     api-pagination (4.8.2)
     arel (9.0.0)
     ast (2.4.1)
@@ -403,6 +405,7 @@ GEM
     rubocop-rspec (2.0.1)
       rubocop (~> 1.0)
       rubocop-ast (>= 1.1.0)
+    ruby-next-core (0.12.0)
     ruby-progressbar (1.10.1)
     ruby2_keywords (0.0.2)
     ruby_dig (0.0.2)
@@ -504,6 +507,7 @@ PLATFORMS
 DEPENDENCIES
   annotate
   annotate_gem
+  anyway_config
   api-pagination
   autoprefixer-rails
   better_errors

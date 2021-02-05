@@ -48,6 +48,13 @@ gem "bootsnap", require: false
 # (http://github.com/plataformatec/responders)
 # gem "responders"
 
+# ============= #
+# CONFIGURATION #
+# ============= #
+
+# Anyway Config is a configuration library for Ruby gems and applications.
+gem "anyway_config"
+
 # ============== #
 # ERROR HANDLING #
 # ============== #
