@@ -8,6 +8,42 @@ module Dmptool
   module HomeController
 
     def render_home_page
+
+dmproadmap_config = DmproadmapConfig.new
+dmptool_config = DmptoolConfig.new
+
+p "---------------------------"
+p "ANYWAY CONFIG"
+p "---------------------------"
+p "LOCAL ENV VARS: "
+p "    EXCELLENCE -> #{dmptool_config.excellence}"
+p ""
+p "DOTENV FILE VARS: "
+p "    DMPHUB_URL -> #{dmptool_config.dmphub_url}"
+p ""
+p "LOCAL YAML FILE VALS: "
+p "    BIG -> #{dmptool_config.big}"
+p ""
+p "INITIALIZER FILE VALS:"
+p "    ORG_NAME: ->  #{dmproadmap_config.x&.organisation&.name}"
+p ""
+p "ENCRYPTED CREDENTIALS FILE VALS: "
+p "    RECAPTCHA_SITE_KEY -> #{dmptool_config.recaptcha_site_key}"
+p "    SITE_SECRET (NESTED WITHIN RECAPTCHA HASH) -> #{dmptool_config.recaptcha&.fetch(:secret_key, '')}"
+p ""
+p "CUSTOM FUNCTION DEFINED IN AnywayConfig CLASS: "
+p "    FOO -> #{dmptool_config.foo}"
+p ""
+p "EXAMPLE OF CALLING OUT TO SSM VIA A CUSTOM EXTENSION:"
+p "    ROSES -> #{dmptool_config.roses}"
+p ""
+p ""
+p "SOURCE TRACES:"
+# pp dmproadmap_config.to_source_trace
+# p " --- "
+pp dmptool_config.to_source_trace
+p "---------------------------"
+
       # Usage stats
       @stats = statistics
 

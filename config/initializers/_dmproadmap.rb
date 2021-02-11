@@ -2,6 +2,8 @@
 
 require "csv"
 
+Anyway.loaders.insert_after :env, :ssm_config_loader, SsmConfigLoader
+
 # DMPRoadmap constants
 #
 # This file is a consolidation of the old custom configuration previously spread
