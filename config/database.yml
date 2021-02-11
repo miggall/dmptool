@@ -1,5 +1,8 @@
+<% dmptool_config = DmptoolConfig.new %>
+
 defaults: &defaults
-  adapter: <%= ENV['DB_ADAPTER'] || 'postgresql' %>
+  adapter: <%= dmptool_config.db_adapter %>
+  # adapter: <%= ENV['DB_ADAPTER'] || 'postgresql' %>
   encoding: <%= ENV['DB_ADAPTER'] == "mysql2" ? "utf8mb4" : "" %>
   database: <%= ENV["DB_NAME"] || 'roadmap' %>
   pool: <%= ENV["DB_POOL_SIZE"] || 16 %>

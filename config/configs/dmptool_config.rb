@@ -6,7 +6,9 @@ class DmptoolConfig < Anyway::Config
               :recaptcha_site_key, # Located in credentials.yml.enc
               :recaptcha,          # Located in credentials.yml.enc
               :big,                # Located in config/dmptool.yml
-              :roses               # Located in SSM (loaded via lib/ssm_config_loader.rb)
+              :roses,              # Located in SSM (loaded via lib/ssm_config_loader.rb)
+              :org_name,
+              :db_adapter
 
   def foo
     "bar"

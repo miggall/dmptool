@@ -2,7 +2,7 @@
 
 require "csv"
 
-Anyway.loaders.insert_after :env, :ssm_config_loader, SsmConfigLoader
+Anyway.loaders.insert_after :credentials, :ssm_config_loader, SsmConfigLoader
 
 # DMPRoadmap constants
 #
@@ -25,7 +25,10 @@ module DMPRoadmap
     # --------------------- #
 
     # Your organisation name, used in various places throught the application
-    config.x.organisation.name = "University of California Curation Center (UC3)"
+    #config.x.organisation.name = "University of California Curation Center (UC3)"
+    dmptool_config = DmptoolConfig.new
+    config.x.organisation.name = dmptool_config.org_name
+
     # Your organisation's abbreviation
     config.x.organisation.abbreviation = "DMPTool"
     # Your organisation's homepage, used in some of the public facing pages
