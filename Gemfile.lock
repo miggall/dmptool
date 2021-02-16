@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/CDLUC3/uc3-ssm
-  revision: ffc02554c5856905d59876671cb991fb71e0df7e
-  branch: main
+  revision: bc398fdbdce0e6041a119813a47de857916eda56
+  branch: 0.3.0rc0
   specs:
-    uc3-ssm (0.1.11)
+    uc3-ssm (0.3.0)
       aws-sdk-ssm (~> 1.84)
       logger (~> 1.4)
       yaml (~> 0.1)
@@ -69,7 +69,7 @@ GEM
     autoprefixer-rails (10.0.3.0)
       execjs
     aws-eventstream (1.1.0)
-    aws-partitions (1.426.0)
+    aws-partitions (1.427.0)
     aws-sdk-core (3.112.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)

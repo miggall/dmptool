@@ -6,6 +6,7 @@
 
 # Ignore bundler config
 /.bundle
+/ruby
 
 # Ignore all logfiles, tempfiles, public assets,
 /log/*.log
@@ -17,6 +18,9 @@ public/*.png
 
 # Ignore .bak files
 *.bak
+
+# Ignore vim backup files
+*.swp
 
 # Ignore public subdirectories
 public/*
