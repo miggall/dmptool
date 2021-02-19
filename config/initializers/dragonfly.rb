@@ -16,10 +16,10 @@ Dragonfly.app.configure do
               server_root: Rails.root.join("public")
   else
     datastore :s3,
-              url_scheme: "s3",
-              url_host: Rails.application.credentials.dragonfly[:bucket],
-              root_path: "logos",
-              bucket_name: Rails.application.credentials.dragonfly[:bucket],
+              url_scheme: Rails.configuration.x.system.dragonfly_url_scheme,
+              url_host: Rails.configuration.x.system.dragonfly_bucket,
+              root_path: Rails.configuration.x.system.dragonfly_root_path,
+              bucket_name: Rails.configuration.x.system.dragonfly_bucket,
               use_iam_profile: true
   end
 end

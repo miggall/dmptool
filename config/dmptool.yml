@@ -1,4 +1,0 @@
-development:
-  big: "bird"
-  org_name: "University of California Curation Center (UC3)"
-  db_adapter: "mysql2"
