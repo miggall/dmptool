@@ -1,36 +1,34 @@
 # frozen_string_literal: true
 
 require 'uc3-ssm'
+require 'logger'
+require 'pp'
 
+$logger = Logger.new(STDOUT)
 class SsmConfigLoader < Anyway::Loaders::Base
-  def initialize(local:)
-    # Need a check here to see if Uc3Ssm could be initialized
-    # @ssm = Uc3Ssm::ConfigResolver.new
-    super(local: local)
-  end
+
 
   def call(name:, **_opts)
-    # We can define default SSM values here and then call out to SSM via Terry's SSM gem
-    hash = {
-      dmptool: {
-        # secret_key_base: fetch_ssm_value(key: SECRET_KEY_BASE) || "12345",
-        roses: "red",
-        violets: "blue"
-      }
-    }.with_indifferent_access
-
-    trace!(source: :ssm) do
-      hash[name].to_h || {}
+    config = {}
+    @ssm = Uc3Ssm::ConfigResolver.new(ssm_root_path: '/uc3/dmp/tool/stg:/uc3/dmp/tool/default')
+    #@ssm = Uc3Ssm::ConfigResolver.new(ssm_root_path: '/uc3/dmp/tool/stg')
+    #value = @ssm.parameter_for_key(name)
+    parameters = @ssm.parameters_for_path(path: name)
+    parameters.each do |p|
+      k = p.name.split('/')[-1] 
+      config[k] = p.value unless config.has_key?(k)
     end
-  end
+    pp config
+    
+  rescue Uc3Ssm::ConfigResolverError => e
+    $logger.warn("#{e.message}")
+    return {}
 
-  private
+    return {} if value == key # ssm_skip_resolution is true
 
-  # Fetch the specified value from SSM
-  def fetch_ssm_value(key:)
-    return nil unless key.present? && @ssm.present?
-
-    # master_key = @ssm.parameter_for_key(key)
-    nil
+    trace!(source: :ssm, store: "SSM_ROOT_PATH=#{ENV['SSM_ROOT_PATH']}") do
+      config
+    end
+    config
   end
 end
