@@ -2,7 +2,13 @@
 
 require "csv"
 
-Anyway.loaders.insert_after :credentials, :ssm_config_loader, SsmConfigLoader
+Anyway.loaders.insert_before(:env, :ssm_parameter_store, SsmConfigLoader)
+#Anyway.loaders.insert_before(:yml, :ssm_parameter_store, SsmConfigLoader)
+#Anyway.loaders.insert_after(:env, :ssm_parameter_store, SsmConfigLoader)
+require "pp"
+Anyway.loaders.each do |loader|
+  pp loader
+end
 
 # DMPRoadmap constants
 #
