@@ -1,64 +1,48 @@
 # frozen_string_literal: true
 
-require 'uc3-ssm'
-require 'logger'
-require 'pp'
+require "uc3-ssm"
+require "logger"
 require "anyway/utils/deep_merge"
 
-$logger = Logger.new(STDOUT)
 class SsmConfigLoader < Anyway::Loaders::Base
 
+  @logger = Logger.new($stdout)
 
+  # rubocop:disable Metrics/AbcSize
   def call(name:, **_opts)
-    resolver = Uc3Ssm::ConfigResolver.new(ssm_root_path: '/uc3/dmp/tool/stg:/uc3/dmp/tool/default')
-    #@ssm = Uc3Ssm::ConfigResolver.new(ssm_root_path: '/uc3/dmp/tool/stg')
-    parameters = resolver.parameters_for_path(path: name)
-    #pp parameters
-
+    logger = Logger.new($stdout)
+    ssm = Uc3Ssm::ConfigResolver.new
+    parameters = ssm.parameters_for_path(path: name)
     config = {}
+    # reverse processing order to ensure correct precidence based on ssm_root_path
+    parameters.reverse_each do |param|
+      # strip off ssm_root_path
+      sub_path = name + param[:name].partition(name)[-1]
+      new_hash = hashify_param_path({}, sub_path, param[:value])
+      Anyway::Utils.deep_merge!(config, new_hash)
+    end
+    # require "pp"
+    # pp config
 
-    ## # Anyway::Utils.deep_merge gives presidence to last matching key,
-    ## # so I reverse the processing order of parameters list.
-    ## parameters.reverse_each do |param|
-    ##   # strip off ssm_root_path
-    ##   sub_path = name + param[:name].partition(name)[-1]
-    ##   #pp sub_path
-    ##   pp param[:name]
-    
-    ##   # convert elements of sub_path into hash keys recursively
-    ##   new_hash = hashify_param_path({}, sub_path, param[:value])
-    ##   #pp new_hash
-    ##   Anyway::Utils.deep_merge!(config, new_hash)
-    ## end
-    ## pp config
-    ## puts
-    
-    #trace!(:ssm_parameter_store, ssm_root_path: "#{ENV['SSM_ROOT_PATH']}") do
-    trace!(:ssm_parameter_store, ssm_root_path: "SSM_ROOT_PATH") do
-      parameters.reverse_each do |param|
-        sub_path = name + param[:name].partition(name)[-1] # strip off ssm_root_path
-        new_hash = hashify_param_path({}, sub_path, param[:value])
-        Anyway::Utils.deep_merge!(config, new_hash)
-      end
+    trace!(:ssm_parameter_store, ssm_root_path: ENV["SSM_ROOT_PATH"].to_s) do
+      config[name].to_h || {}
     end
 
-    pp config
-    config
-
+    config[name].to_h || {}
   rescue Uc3Ssm::ConfigResolverError => e
-    $logger.warn("#{e.message}")
-    return {}
-
+    logger.warn(e.message.to_s)
+    {}
+  rescue Aws::SSM::Errors::ServiceError => e
+    logger.warn("Aws::SSM::Errors::#{e.code}: #{e.message}")
+    {}
   end
+  # rubocop:enable Metrics/AbcSize
 
+  # convert elements of sub_path into hash keys recursively
   def hashify_param_path(new_hash, path, value)
-    key, x, sub_path = path.partition('/')
-    if sub_path.empty?
-      new_hash[key] = value
-    else
-      new_hash[key] = hashify_param_path({}, sub_path, value)
-    end
-    return new_hash
+    key, _x, sub_path = path.partition("/")
+    new_hash[key] = sub_path.empty? ? value : hashify_param_path({}, sub_path, value)
+    new_hash
   end
 
 end
