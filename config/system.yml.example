@@ -1,0 +1,128 @@
+# Rails, Puma and other infrastructure config
+#
+#   see application.yml for DMPRoadmap application specific config
+#   see credentials.yml.enc for secrets (e.g. `EDITOR=vi rails credentials:edit`)
+#
+default: &default
+  # Used as the base secret for all MessageVerifiers in Rails, including the one protecting cookies.
+  secret_key_base: [add your unique value by running `rails secret` and pasting the response here]
+
+  # Base Rails configuration
+  # See https://guides.rubyonrails.org/v5.0/configuring.html
+  server_host: "localhost"
+  port: "3000"
+  web_concurrency: 2
+  cookie_key: "_dmp_roadmap_session"
+  rails_log_to_stdout: true
+  rails_max_threads: 5
+  rails_serve_static_files: true
+
+  # Determines how long to cache results for OrgSelection::SearchService
+  cache_org_selection_expiration: "86_400"
+  # Determines how long to cache results for the ResearchProjectsController
+  cache_research_projects_expiration: "86_400"
+
+  # Database configuration.
+  # See https://guides.rubyonrails.org/v5.0/configuring.html#configuring-a-database
+  database_adapter: "mysql2"
+  database_name: "dmp"
+  database_host: "localhost"
+  database_pool_size: 16
+  database_username: "root"
+  database_password:
+
+  # Security configuration used by the Devise gem to encrypt/decrypt passwords
+  # See https://github.com/heartcombo/devise
+  devise_pepper: "[add your unique value by running `rails secret` and pasting the response here]"
+
+  # Org logo store configuration.
+  # See https://github.com/markevans/dragonfly
+  dragonfly_aws: false
+  dragonfly_bucket: "[my bucket]"
+  dragonfly_host: "[my s3 host]"
+  dragonfly_root_path: "logos"
+  dragonfly_secret: "[my aws secret]"
+  dragonfly_url_scheme: "s3"
+
+  # Information required by external APIs
+  # -------------------------------------
+  # Generic DOI service will mint DMP IDs (aka DOIs)
+  doi_minting: false
+  # DMPHub will mint DMP IDs (aka DOIs).
+  # See https://github.com/CDLUC3/dmphub
+  dmphub_active: false
+  dmphub_url: "https://localhost:3001/api/v0/"
+  dmphub_client_id: "[add your unique client_id from the DMPHub system's api_client table]"
+  dmphub_client_secret: "[add your unique client_secret from the DMPHub system's api_client table]"
+
+  # Google Analytics config. Tracker root is the base key for your application
+  google_analytics_tracker_root: "[my application]"
+
+  # The OpenAire API is used to retrieve metadata standards for a specific question type
+  openaire_active: false
+
+  # ORCID provides identifiers for people.
+  # See the public api docs https://info.orcid.org/documentation/features/public-api/
+  # Or the member api docs https://info.orcid.org/documentation/features/member-api/
+  orcid_client_id: "[your orcid client id]"
+  orcid_client_secret: "[your orcid client secret]"
+  orcid_sandbox: true
+
+  # Recaptcha is used to prevent malicious use of the Contact Us and Create Account forms
+  # See https://developers.google.com/recaptcha/intro
+  recaptcha_enabled: false
+  recaptcha_site_key: "[your recaptcha site key]"
+  recaptcha_secret_key: "[your recaptcha secret]"
+
+  # Rollbar converts errors into GutHub issues
+  # See https://docs.rollbar.com/docs/gem-configuration-reference
+  # rollbar_env: production
+  # rollbar_access_token: ABCD1234
+
+  # Will use the ROR api to search for Org's as the user types
+  ror_active: true
+
+  # Enable shibboleth as an alternative authentication method
+  # Requires server configuration and omniauth shibboleth provider configuration
+  # See config/initializers/devise.rb
+  shibboleth_enabled: false
+
+  # Relative paths to Shibboleth SSO
+  shibboleth_login_url: "/Shibboleth.sso/Login"
+  shibboleth_logout_url: "/Shibboleth.sso/Logout?return="
+
+  # If this value is set to true your users will be presented with a list of orgs that have a
+  # shibboleth identifier in the orgs_identifiers table. If it is set to false (default), the user
+  # will be driven out to your federation's discovery service
+  #
+  # A super admin will also be able to associate orgs with their shibboleth entityIds if this is
+  # set to true
+  shibboleth_use_filtered_discovery_service: true
+
+  # Translation IO can be used to help failitate translating your custom code.Translations for the
+  # core DMPRoadmap codebase are handled by the development team
+  # See https://translation.io/rails/usage
+  translation_io_key: "[your translation io key]"
+
+  # Usersnap is a service that allows users to provide feedback on specific portions of the UI.
+  # We do not recommend using this in production!
+  # See https://usersnap.com/
+  usersnap_key: "[your usersnap key]"
+
+  # Location of the wkhtmltopdf executable
+  wkhtmltopdf_path: <%= Rails.root.join("bin", "wkhtmltopdf").to_s %>
+
+development:
+  <<: *default
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+
+stage:
+  <<: *default
+
+production:
+  <<: *default

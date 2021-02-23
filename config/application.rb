@@ -48,6 +48,8 @@ module DMPRoadmap
     # Set the default host for mailer URLs
     config.action_mailer.default_url_options = { host: Socket.gethostname.to_s }
 
+    config.x.system = SystemConfig.new
+    config.x.application = ApplicationConfig.new
   end
 
 end
