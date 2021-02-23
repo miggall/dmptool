@@ -11,6 +11,8 @@ namespace :config do
       p "Loading #{config.class.name}:"
       p "---------------------------------------------------"
       p ""
+      pp ENV['RAILS_MASTER_KEY']
+      pp Rails.application.credentials.secret_key_base
       pp config.to_source_trace
       p ""
       p "==================================================="

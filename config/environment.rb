@@ -5,6 +5,7 @@ require_relative "application"
 
 # Load master_key into ENV
 require "uc3-ssm"
+require "pp"
 if ENV.has_key?('SSM_ROOT_PATH')
   begin
     ssm = Uc3Ssm::ConfigResolver.new
@@ -14,6 +15,7 @@ if ENV.has_key?('SSM_ROOT_PATH')
     ActiveSupport::Logger.new($stdout).warn("Could not retrieve master_key from SSM Parameter Store: #{e.full_message}")
   end
 end
+pp ENV['RAILS_MASTER_KEY']
 
 # Initialize the Rails application.
 Rails.application.initialize!

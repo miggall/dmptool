@@ -10,7 +10,6 @@ set :repo_url,         ENV['REPO_URL']        || 'https://github.com/cdluc3/dmpt
 set :branch,           ENV['BRANCH']          || 'master'
 
 set :default_env,      { path: "$PATH" }
-puts "default_env: #{fetch(:default_env)}"
 
 # Gets the current Git tag and revision
 set :version_number, `git describe --tags`
@@ -45,9 +44,7 @@ namespace :deploy do
     on roles(:app), wait: 1 do
       ssm = Uc3Ssm::ConfigResolver.new
       credentials_yml_enc = ssm.parameter_for_key('credentials_yml_enc')
-      f = File.open("#{release_path}/config/credentials.yml.enc", 'w')
-      f.puts credentials_yml_enc.chomp 
-      f.close
+      IO.write("#{release_path}/config/credentials.yml.enc", credentials_yml_enc.chomp)
     end
   end
 end
