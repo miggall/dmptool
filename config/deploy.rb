@@ -2,16 +2,13 @@
 
 # set vars from ENV
 set :application,      ENV['CAPISTRANO_APP']  || 'DMPTool'
-set :user,             ENV['USER']            || 'dmp'
 set :deploy_to,        ENV['DEPLOY_TO']       || '/dmp/apps/dmptool'
 set :rails_env,        ENV['RAILS_ENV']       || 'production'
 set :repo_url,         ENV['REPO_URL']        || 'https://github.com/cdluc3/dmptool.git'
 set :branch,           ENV['BRANCH']          || 'master'
 
-set :share_to,         "#{fetch(:deploy_to)}/shared"
 set :default_env,      { path: "$PATH" }
-puts "default_env:"
-puts fetch(:default_env).to_s
+puts "default_env: #{fetch(:default_env)}"
 puts "deploy_path: #{deploy_path}"
 
 # Gets the current Git tag and revision
