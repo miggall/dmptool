@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "uc3-ssm"
+
 # set vars from ENV
 set :application,      ENV['CAPISTRANO_APP']  || 'DMPTool'
 set :deploy_to,        ENV['DEPLOY_TO']       || '/dmp/apps/dmptool'
@@ -9,19 +11,18 @@ set :branch,           ENV['BRANCH']          || 'master'
 
 set :default_env,      { path: "$PATH" }
 puts "default_env: #{fetch(:default_env)}"
-puts "deploy_path: #{deploy_path}"
 
 # Gets the current Git tag and revision
 set :version_number, `git describe --tags`
 # Default environments to skip
 set :bundle_without, %w[pgsql thin rollbar test].join(" ")
 
-# Default value for :linked_files is []
-append :linked_files,
-       ".env",
-       "config/credentials.yml.enc",
-       "config/master.key",
-       "public/tinymce/tinymce.css"
+## # Default value for :linked_files is []
+## append :linked_files,
+##        ".env",
+##        "config/credentials.yml.enc",
+##        "config/master.key",
+##        "public/tinymce/tinymce.css"
 
 # Default value for linked_dirs is []
 append :linked_dirs,
@@ -35,7 +36,7 @@ append :linked_dirs,
 set :keep_releases, 5
 
 namespace :deploy do
-  before :complile_assets, :retrieve_credentials 
+  before :compile_assets, :retrieve_credentials 
   after :deploy, "git:version"
   after :deploy, "cleanup:remove_example_configs"
 
