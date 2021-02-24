@@ -35,8 +35,8 @@ append :linked_dirs,
 set :keep_releases, 5
 
 namespace :deploy do
-  before :compile_assets, :retrieve_credentials 
-  before :retrieve_credentials, :retrieve_master_key 
+  before :compile_assets, "deploy:retrieve_credentials"
+  before :compile_assets, "deploy:retrieve_master_key"
   after :deploy, "git:version"
   after :deploy, "cleanup:remove_example_configs"
 

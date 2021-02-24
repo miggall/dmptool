@@ -7,6 +7,7 @@
 # Ignore bundler config
 /.bundle
 /ruby
+/vendor
 
 # Ignore locally build bundle outputs
 /ruby
