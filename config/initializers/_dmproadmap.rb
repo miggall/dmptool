@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
 require "csv"
+require "pp"
 
 Anyway.loaders.insert_before(:env, :ssm_parameter_store, SsmConfigLoader)
+
+# Ashley's shitty hack to force secret_key_base into a place where
+# Rails::Application.secret_key_base can find it.
+# This shouldn't be necessary
+ENV['SECRET_KEY_BASE'] = Rails.configuration.x.system.secret_key_base
+pp "SECRET_KEY_BASE: #{ENV['SECRET_KEY_BASE']}"
 
 # DMPRoadmap constants
 #
