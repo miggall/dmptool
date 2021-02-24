@@ -17,14 +17,14 @@ if ENV.has_key?('SSM_ROOT_PATH')
 end
 pp "RAILS_MASTER_KEY: #{ENV['RAILS_MASTER_KEY']}"
 
+# Initialize the Rails application.
+Rails.application.initialize!
+
 # Ashley's shitty hack to force secret_key_base into a place where
 # Rails::Application.secret_key_base can find it.
 # This shouldn't be necessary
 ENV['SECRET_KEY_BASE'] = Rails.configuration.x.system.secret_key_base
 pp "SECRET_KEY_BASE: #{ENV['SECRET_KEY_BASE']}"
-
-# Initialize the Rails application.
-Rails.application.initialize!
 
 Rails.application.configure do
   # Disable serving static files from the `/public` folder by default since
