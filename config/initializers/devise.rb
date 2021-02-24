@@ -16,6 +16,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 10
 
   config.secret_key = Rails.configuration.x.system.secret_key_base
+  config.secret_key_base = Rails.configuration.x.system.secret_key_base
   config.pepper = Rails.configuration.x.system.devise_pepper
 
   config.reconfirmable = false
