@@ -15,7 +15,13 @@ if ENV.has_key?('SSM_ROOT_PATH')
     ActiveSupport::Logger.new($stdout).warn("Could not retrieve master_key from SSM Parameter Store: #{e.full_message}")
   end
 end
-pp ENV['RAILS_MASTER_KEY']
+pp "RAILS_MASTER_KEY: #{ENV['RAILS_MASTER_KEY']}"
+
+# Ashley's shitty hack to force secret_key_base into a place where
+# Rails::Application.secret_key_base can find it.
+# This shouldn't be necessary
+ENV['SECRET_KEY_BASE'] = Rails.configuration.x.system.secret_key_base
+pp "SECRET_KEY_BASE: #{ENV['SECRET_KEY_BASE']}"
 
 # Initialize the Rails application.
 Rails.application.initialize!
