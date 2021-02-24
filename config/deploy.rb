@@ -36,6 +36,7 @@ set :keep_releases, 5
 
 namespace :deploy do
   before :compile_assets, :retrieve_credentials 
+  before :compile_assets, :retrieve_master_key 
   after :deploy, "git:version"
   after :deploy, "cleanup:remove_example_configs"
 
@@ -45,6 +46,13 @@ namespace :deploy do
       ssm = Uc3Ssm::ConfigResolver.new
       credentials_yml_enc = ssm.parameter_for_key('credentials_yml_enc')
       IO.write("#{release_path}/config/credentials.yml.enc", credentials_yml_enc.chomp)
+    end
+  end
+
+  desc 'Retrieve master.key contents from SSM ParameterStore'
+  task :retrieve_master_key do
+    on roles(:app), wait: 1 do
+      ssm = Uc3Ssm::ConfigResolver.new
       master_key = ssm.parameter_for_key('master_key')
       IO.write("#{release_path}/config/master.key", master_key.chomp)
     end
