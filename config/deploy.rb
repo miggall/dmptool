@@ -45,6 +45,8 @@ namespace :deploy do
       ssm = Uc3Ssm::ConfigResolver.new
       credentials_yml_enc = ssm.parameter_for_key('credentials_yml_enc')
       IO.write("#{release_path}/config/credentials.yml.enc", credentials_yml_enc.chomp)
+      master_key = ssm.parameter_for_key('master_key')
+      IO.write("#{release_path}/config/master.key", master_key.chomp)
     end
   end
 end
