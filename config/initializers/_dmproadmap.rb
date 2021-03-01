@@ -2,8 +2,6 @@
 
 require "csv"
 
-Anyway.loaders.insert_before(:env, :ssm_parameter_store, SsmConfigLoader)
-
 ## # Ashley's shitty hack to force secret_key_base into a place where
 ## # Rails::Application.secret_key_base can find it.
 ## # This shouldn't be necessary

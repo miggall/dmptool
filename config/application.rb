@@ -10,6 +10,12 @@ require "csv"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Ensure our custom config loader ssm_parameter_store is inserted into Anyway.loaders
+# prior to instantiating our custom Anyway::Config classes.
+# Question: is there a nicer way to do this require_relative?
+require_relative "../lib/ssm_config_loader"
+::Anyway.loaders.insert_before(:env, :ssm_parameter_store, SsmConfigLoader)
+
 module DMPRoadmap
 
   class Application < Rails::Application
