@@ -1,10 +1,10 @@
 <!-- UserSnap -->
-<% if Rails.env.stage? && Rails.application.credentials.usersnap[:key].present? %>
+<% if Rails.env.stage? && Rails.configuration.x.system.usersnap_key.present? %>
   <script type="text/javascript">
     (function() {
       var s = document.createElement("script");
       s.type = "text/javascript"; s.async = true;
-      s.src = '//api.usersnap.com/load/<%= Rails.application.credentials.usersnap[:key] %>.js';
+      s.src = '//api.usersnap.com/load/<%= Rails.configuration.x.system.usersnap_key %>.js';
       var x = document.getElementsByTagName('script')[0];
       x.parentNode.insertBefore(s, x);
     })();
@@ -12,8 +12,8 @@
 <% end %>
 
 <!-- Google Analytics -->
-<% if (Rails.env.stage? || Rails.env.production?) && Rails.configuration.x.google_analytics.tracker_root.present? %>
-  <% root_abbr = Rails.configuration.x.google_analytics.tracker_root %>
+<% if (Rails.env.stage? || Rails.env.production?) && Rails.configuration.x.system.google_analytics_tracker_root.present? %>
+  <% root_abbr = Rails.configuration.x.system.google_analytics_tracker_root %>
   <% root_org = Org.where(abbreviation: root_abbr).first %>
   <% if root_org.tracker.present? %>
     <% root_code = root_org.tracker.code %>
