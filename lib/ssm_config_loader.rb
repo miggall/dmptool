@@ -2,6 +2,7 @@
 
 require "uc3-ssm"
 require "logger"
+require "anyway"
 require "anyway/utils/deep_merge"
 
 class SsmConfigLoader < Anyway::Loaders::Base
