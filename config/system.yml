@@ -5,7 +5,8 @@
 #
 default: &default
   # Used as the base secret for all MessageVerifiers in Rails, including the one protecting cookies.
-  secret_key_base: "add your unique value by running 'rails secret' and pasting the response here"
+  #secret_key_base: ["add your unique value by running 'rails secret' and pasting the response here"]
+  secret_key_base:
 
   # Base Rails configuration
   # See https://guides.rubyonrails.org/v5.0/configuring.html
@@ -33,15 +34,16 @@ default: &default
 
   # Security configuration used by the Devise gem to encrypt/decrypt passwords
   # See https://github.com/heartcombo/devise
-  devise_pepper: "[add your unique value by running `rails secret` and pasting the response here]"
+  #devise_pepper: "[add your unique value by running `rails secret` and pasting the response here]"
+  devise_pepper:
 
   # Org logo store configuration.
   # See https://github.com/markevans/dragonfly
   dragonfly_aws: false
-  dragonfly_bucket: "[my bucket]"
-  dragonfly_host: "[my s3 host]"
+  dragonfly_bucket:
+  dragonfly_host:
   dragonfly_root_path: "logos"
-  dragonfly_secret: "[my aws secret]"
+  dragonfly_secret:
   dragonfly_url_scheme: "s3"
 
   # Information required by external APIs
@@ -52,11 +54,13 @@ default: &default
   # See https://github.com/CDLUC3/dmphub
   dmphub_active: true
   dmphub_url: "https://localhost:3001/api/v0/"
-  dmphub_client_id: "[add your unique client_id from the DMPHub system's api_client table]"
-  dmphub_client_secret: "[add your unique client_secret from the DMPHub system's api_client table]"
+  #dmphub_client_id: "[add your unique client_id from the DMPHub system's api_client table]"
+  dmphub_client_id:
+  #dmphub_client_secret: "[add your unique client_secret from the DMPHub system's api_client table]"
+  dmphub_client_secret:
 
   # Google Analytics config. Tracker root is the base key for your application
-  google_analytics_tracker_root: "[my application]"
+  google_analytics_tracker_root:
 
   # The OpenAire API is used to retrieve metadata standards for a specific question type
   openaire_active: false
@@ -64,15 +68,15 @@ default: &default
   # ORCID provides identifiers for people.
   # See the public api docs https://info.orcid.org/documentation/features/public-api/
   # Or the member api docs https://info.orcid.org/documentation/features/member-api/
-  orcid_client_id: "[your orcid client id]"
-  orcid_client_secret: "[your orcid client secret]"
+  orcid_client_id:
+  orcid_client_secret:
   orcid_sandbox: true
 
   # Recaptcha is used to prevent malicious use of the Contact Us and Create Account forms
   # See https://developers.google.com/recaptcha/intro
   recaptcha_enabled: false
-  recaptcha_site_key: "[your recaptcha site key]"
-  recaptcha_secret_key: "[your recaptcha secret]"
+  recaptcha_site_key:
+  recaptcha_secret_key:
 
   # Rollbar converts errors into GutHub issues
   # See https://docs.rollbar.com/docs/gem-configuration-reference
@@ -102,12 +106,12 @@ default: &default
   # Translation IO can be used to help failitate translating your custom code.Translations for the
   # core DMPRoadmap codebase are handled by the development team
   # See https://translation.io/rails/usage
-  translation_io_key: "[your translation io key]"
+  translation_io_key:
 
   # Usersnap is a service that allows users to provide feedback on specific portions of the UI.
   # We do not recommend using this in production!
   # See https://usersnap.com/
-  usersnap_key: "[your usersnap key]"
+  usersnap_key:
 
   # Location of the wkhtmltopdf executable
   wkhtmltopdf_path: <%= Rails.root.join("bin", "wkhtmltopdf").to_s %>
