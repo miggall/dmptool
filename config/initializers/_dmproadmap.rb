@@ -2,14 +2,6 @@
 
 require "csv"
 
-## # Ashley's shitty hack to force secret_key_base into a place where
-## # Rails::Application.secret_key_base can find it.
-## # This shouldn't be necessary
-## require "pp"
-## secret_key_base = Rails.configuration.x.system.secret_key_base
-## ENV['SECRET_KEY_BASE'] = secret_key_base.nil? ? "" : secret_key_base
-## pp "SECRET_KEY_BASE: #{ENV['SECRET_KEY_BASE']}"
-
 # DMPRoadmap constants
 #
 # This file is a consolidation of the old custom configuration previously spread

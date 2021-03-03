@@ -3,7 +3,6 @@
 require "uc3-ssm"
 
 # set vars from ENV
-set :application,      ENV['CAPISTRANO_APP']  || 'DMPTool'
 set :deploy_to,        ENV['DEPLOY_TO']       || '/dmp/apps/dmptool'
 set :rails_env,        ENV['RAILS_ENV']       || 'production'
 set :repo_url,         ENV['REPO_URL']        || 'https://github.com/cdluc3/dmptool.git'
