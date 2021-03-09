@@ -12,6 +12,7 @@ namespace :org_cleanup do
         id: org.id,
         original: org.name,
         cleansed: cleansed,
+        date: org.created_at.strftime("%Y-%m-%d"),
         abbreviation: name_to_abbreviation(name: cleansed),
         matches: []
       }
@@ -46,7 +47,9 @@ namespace :org_cleanup do
     p "No duplicates detected" unless found.any?
 
     found.each do |hash|
-      p "#{hash[:id]} - '#{hash[:original]}' may match Org(s): #{hash[:matches]}"
+      # rubocop:disable Layout/LineLength
+      p "#{hash[:id]} - '#{hash[:original]}' created on #{hash[:date]} may match Org(s): #{hash[:matches]}"
+      # rubocop:enable Layout/LineLength
     end
   end
 
@@ -81,6 +84,25 @@ namespace :org_cleanup do
       end
     else
       p "No IdentifierScheme defined for 'ror'!"
+    end
+  end
+
+  desc "Find Plans with a NULL org_id and populate with the Creator's Org"
+  task fix_plans: :environment do
+    plans = Plan.includes(roles: { user: :org })
+                .joins(roles: { user: :org })
+                .where(plans: { org: nil })
+
+    p "Identified #{plans.length} plans with no :org_id"
+    plans.each do |plan|
+      creator = plan.roles
+                    .select(&:creator?)
+                    .max(&:created_at)
+                    .user
+      next unless creator.present? && creator.org.present?
+
+      # Using :update_columns here to prevent the :updated_at from changing
+      plan.update_columns(org_id: creator.org.id)
     end
   end
 

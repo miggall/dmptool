@@ -76,6 +76,9 @@ describe Plan do
 
     it { is_expected.to have_many(:contributors) }
 
+    it { is_expected.to have_many(:subscriptions) }
+
+    it { is_expected.to have_many(:related_identifiers) }
   end
 
   describe ".publicly_visible" do
@@ -1507,6 +1510,28 @@ describe Plan do
       id = create(:identifier, identifiable: plan, value: "ark:10.9999/123")
       plan.reload
       expect(plan.landing_page).to eql(id)
+    end
+  end
+
+  describe "#doi" do
+    before(:each) do
+      @plan = create(:plan, :creator)
+      IdentifierScheme.for_identification.destroy_all
+    end
+
+    it "returns nil if there are no IdentifierScheme :for_identification" do
+      expect(@plan.doi).to eql(nil)
+    end
+    it "returns nil if the Plan has no DOI" do
+      IdentifierScheme.create(for_identification: true, name: "foo", active: true)
+      expect(@plan.doi).to eql(nil)
+    end
+    it "returns the correct identifier" do
+      scheme = IdentifierScheme.create(for_identification: true, name: "foo",
+                                       active: true)
+      id = create(:identifier, identifier_scheme: scheme, identifiable: @plan)
+      @plan.reload
+      expect(@plan.doi).to eql(id)
     end
   end
 

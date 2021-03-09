@@ -117,9 +117,13 @@ class Plan < ApplicationRecord
 
   has_many :contributors, dependent: :destroy
 
-  has_one :grant, as: :identifiable, dependent: :destroy, class_name: "Identifier"
-
   belongs_to :api_client, optional: true
+
+  has_many :research_outputs, dependent: :destroy
+
+  has_many :subscriptions, dependent: :destroy
+
+  has_many :related_identifiers, as: :identifiable, dependent: :destroy
 
   # =====================
   # = Nested Attributes =
@@ -130,6 +134,10 @@ class Plan < ApplicationRecord
   accepts_nested_attributes_for :roles
 
   accepts_nested_attributes_for :contributors
+
+  accepts_nested_attributes_for :research_outputs
+
+  accepts_nested_attributes_for :related_identifiers
 
   # ===============
   # = Validations =
@@ -430,6 +438,7 @@ class Plan < ApplicationRecord
                  .administrator
                  .order(:created_at)
                  .pluck(:user_id).first
+
     usr_id.present? ? User.find(usr_id) : nil
   end
 
@@ -573,6 +582,52 @@ class Plan < ApplicationRecord
   # Returns the plan's identifier (either a DOI/ARK)
   def landing_page
     identifiers.select { |i| %w[doi ark].include?(i.identifier_format) }.first
+  end
+
+  # Retrieves the Plan's most recent DOI
+  def doi
+    return nil unless Rails.configuration.x.allow_doi_minting
+
+    schemes = IdentifierScheme.for_identification
+
+    if schemes.any?
+      identifiers.select { |id| schemes.include?(id.identifier_scheme) }.last
+    else
+      # If there is curently no identifier schemes defined as identification
+      identifiers.select { |id| %w[ark doi].include?(id.identifier_format) }.last
+    end
+  end
+
+  # Returns whether or not minting is allowed for the current plan
+  def minting_allowed?
+    orcid_scheme = IdentifierScheme.where(name: "orcid").first
+    ror_scheme = IdentifierScheme.where(name: "ror").first
+    return false unless orcid_scheme.present? && ror_scheme.present?
+
+    orcids = contributors.select { |c| c&.identifier_for_scheme(scheme: orcid_scheme).present? }
+    rors = contributors.select { |c| c.org&.identifier_for_scheme(scheme: ror_scheme).present? }
+    visibility_allowed? && orcids.any? && rors.any? && funder.present?
+  end
+
+  # Since the Grant is not a normal AR association, override the getter and setter
+  def grant
+    Identifier.find_by(id: grant_id)
+  end
+
+  # Helper method to convert the grant id value entered by the user into an Identifier
+  def grant=(params)
+    current = grant
+
+    # Remove it if it was blanked out by the user
+    current.destroy unless params[:value].present?
+    return unless params[:value].present?
+
+    # Create the Identifier if it doesn't exist and then set the id
+    current.update(value: params[:value]) if current.present? && current.value != params[:value]
+    return if current.present?
+
+    current = Identifier.create(identifiable: self, value: params[:value])
+    self.grant_id = current.id
   end
 
   private
