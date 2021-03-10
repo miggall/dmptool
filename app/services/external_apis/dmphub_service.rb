@@ -92,6 +92,38 @@ module ExternalApis
         doi
       end
 
+      # Update the DOI
+      def update_doi(plan:)
+        return nil unless active? && auth && plan.present?
+
+        hdrs = {
+          "Authorization": @token,
+          "Server-Agent": "#{caller_name} (#{client_id})"
+        }
+
+        target = "#{api_base_url}#{callback_path}" % { dmp_id: plan.doi.value_without_scheme_prefix }
+        resp = http_put(uri: target, additional_headers: hdrs, debug: true,
+                        data: json_from_template(plan: plan))
+
+        # DMPHub returns a 200 when successful
+        unless resp.present? && resp.code == 200
+          handle_http_failure(method: "DMPHub update_doi", http_response: resp)
+          return nil
+        end
+
+        doi = process_response(response: resp)
+        update_subscription(plan: plan, doi: doi) if doi.present?
+        doi
+      end
+
+      # Delete the DOI
+      def delete_doi(plan:)
+        return nil unless active? && plan.present?
+
+        # implement this later if necessary and if reasonable. Is deleting a DOI feasible?
+        plan.present?
+      end
+
       # Register the ApiClient behind the minter service as a Subscriber to the Plan
       # if the service has a callback URL and ApiClient
       def add_subscription(plan:, doi:)
@@ -108,20 +140,12 @@ module ExternalApis
         )
       end
 
-      # Update the DOI
-      def update_doi(plan:)
-        return nil unless active? && plan.present?
+      # Bump the last_notified timestamp on the subscription
+      def update_subscription(plan:, doi:)
+        Rails.logger.warn "DMPHubService - No ApiClient available for 'dmphub'!" unless api_client.present?
+        return plan unless plan.present? && doi.present? && callback_path.present? && api_client.present?
 
-        # Implement this later once we figure out versioning
-        plan.present?
-      end
-
-      # Delete the DOI
-      def delete_doi(plan:)
-        return nil unless active? && plan.present?
-
-        # implement this later if necessary and if reasonable. Is deleting a DOI feasible?
-        plan.present?
+        Subscription.where(plan: plan, subscriber: api_client).update(last_notified: Time.now)
       end
 
       private

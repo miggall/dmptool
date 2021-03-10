@@ -22,6 +22,17 @@ class DoiService
                      identifiable: plan, value: doi)
     end
 
+    def update_doi(plan:)
+      # plan must exist and have a DOI
+      return nil unless minting_service_defined? && plan.present? && plan.is_a?(Plan) && plan.doi.present?
+
+      svc = minter
+      return nil unless svc.present?
+
+      doi = svc.update_doi(plan: plan)
+      return nil unless doi.present?
+    end
+
     # Returns whether or not there is an active DOI minting service
     def minting_service_defined?
       Rails.configuration.x.allow_doi_minting && minter.present?
@@ -33,6 +44,14 @@ class DoiService
       return nil unless svc.present?
 
       scheme(svc: svc)&.name&.downcase
+    end
+
+    # Return the inheriting service's :callback_path (defined in their config)
+    def scheme_callback_uri
+      svc = minter
+      return nil unless svc.present?
+
+      svc.callback_path
     end
 
     private
