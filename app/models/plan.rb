@@ -30,6 +30,9 @@
 #  funder_id                         :integer
 #  grant_id                          :integer
 #  api_client_id                     :integer
+#  ethical_issues                    :boolean
+#  ethical_issues_description        :text
+#  ethical_issues_report             :string
 #
 # Indexes
 #
@@ -157,7 +160,7 @@ class Plan < ApplicationRecord
   # = Callbacks =
   # =============
 
-  after_update :notify_subscribers
+  after_update :notify_subscribers, if: :versionable_change?
   after_touch :notify_subscribers
 
   # ==========
@@ -631,6 +634,16 @@ class Plan < ApplicationRecord
 
   private
 
+  # Determines whether or not the attributes that were updated constitute a versionable change
+  # for example a user requesting feedback will change the :feedback_requested flag but that
+  # should not create a new version or notify any subscribers!
+  def versionable_change?
+    saved_change_to_title? || saved_change_to_description? || saved_change_to_identifier? ||
+      saved_change_to_visibility? || saved_change_to_complete? || saved_change_to_template_id? ||
+      saved_change_to_org_id? || saved_change_to_funder_id? || saved_change_to_grant_id? ||
+      saved_change_to_start_date? || saved_change_to_end_date?
+  end
+
   # Callback that will notify scubscribers of a new version of the Plan
   def notify_subscribers
     return true unless doi.present? && subscriptions.any?
@@ -647,6 +660,10 @@ class Plan < ApplicationRecord
     # TODO: eventually consider setting this up as a Job and using the ApiClient's callback_url
     #       and callback_method as the targets to process other subscribers
     # UpdateDoiJob.perform_later(plan: self)
+  rescue StandardError => e
+    # Log the error and continue. We do not want this to disrupt the save!
+    Rails.logger.error "Failure on Plan.notify_subscribers for id - #{id} & client - '#{api_client_id&.name}'"
+    return true
   end
 
   # Validation to prevent end date from coming before the start date
