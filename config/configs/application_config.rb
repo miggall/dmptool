@@ -43,7 +43,9 @@ class ApplicationConfig < Anyway::Config
               :plans_default_visibility,
               :plans_default_percentage_answered,
               :plans_org_admins_read_all,
-              :plans_super_admins_read_all
+              :plans_super_admins_read_all,
+              :preferred_licenses,
+              :preferred_licenses_guidance_url
 
   required :name, :do_not_reply_email, :helpdesk_email, :organisation_name,
            :welcome_links, :locales_default, :preferences,

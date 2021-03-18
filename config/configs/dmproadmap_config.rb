@@ -227,7 +227,6 @@ class DmproadmapConfig < Anyway::Config
            :max_number_links_funder, :max_number_links_org,
            :max_number_links_sample_plan, :max_number_themes_per_column,
            :plans_default_visibility, :plans_default_percentage_answered, :plans_org_admins_read_all,
-           :plans_super_admins_read_all,
-
+           :plans_super_admins_read_all
 
 end

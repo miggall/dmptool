@@ -47,6 +47,8 @@ class SystemConfig < Anyway::Config
               :orcid_client_secret,
               :orcid_sandbox,
 
+              :re3data_active,
+
               :recaptcha_enabled,
               :recaptcha_site_key,
               :recaptcha_secret_key,
@@ -60,6 +62,8 @@ class SystemConfig < Anyway::Config
               :shibboleth_login_url,
               :shibboleth_logout_url,
               :shibboleth_use_filtered_discovery_service,
+
+              :spdx_active,
 
               :translation_io_key,
 

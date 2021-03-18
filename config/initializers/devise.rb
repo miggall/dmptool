@@ -6,7 +6,7 @@ require "custom_failure"
 Devise.setup do |config|
   require "devise/orm/active_record"
 
-  config.mailer_sender = Rails.configuration.x.application.do_not_reply_email
+  config.mailer_sender = Rails.configuration.x.dmproadmap.do_not_reply_email
 
   config.case_insensitive_keys = [:email]
   config.strip_whitespace_keys = [:email]
@@ -15,8 +15,8 @@ Devise.setup do |config|
 
   config.stretches = Rails.env.test? ? 1 : 10
 
-  config.secret_key = Rails.configuration.x.system.secret_key_base
-  config.pepper = Rails.configuration.x.system.devise_pepper
+  config.secret_key = Rails.configuration.x.dmproadmap.secret_key_base
+  config.pepper = Rails.configuration.x.dmproadmap.devise_pepper
 
   config.reconfirmable = false
 
@@ -30,10 +30,10 @@ Devise.setup do |config|
 
   # Omniauth Providers
   config.omniauth :orcid,
-                  Rails.configuration.x.system.orcid_client_id,
-                  Rails.configuration.x.system.orcid_client_secret,
+                  Rails.configuration.x.dmproadmap.orcid_client_id,
+                  Rails.configuration.x.dmproadmap.orcid_client_secret,
                   member: true,
-                  sandbox: Rails.configuration.x.system.orcid_sandbox
+                  sandbox: Rails.configuration.x.dmproadmap.orcid_sandbox
 
   config.omniauth :shibboleth, {
     request_type: :header,

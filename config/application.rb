@@ -71,6 +71,7 @@ module DMPRoadmap
     unless defined?(::Rails::Command::CredentialsCommand)
       config.x.system = SystemConfig.new
       config.x.application = ApplicationConfig.new
+      config.x.dmproadmap = DmproadmapConfig.new
     end
   end
 

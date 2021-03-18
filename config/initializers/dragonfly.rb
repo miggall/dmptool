@@ -5,7 +5,7 @@ require 'dragonfly/s3_data_store'
 Dragonfly.app.configure do
   plugin :imagemagick
 
-  secret Rails.application.credentials.dragonfly[:secret]
+  secret Rails.configuration.x.dmproadmap.dragonfly_secret
 
   url_format "/media/:job/:name"
 
@@ -15,10 +15,10 @@ Dragonfly.app.configure do
               server_root: Rails.root.join("public")
   else
     datastore :s3,
-              url_scheme: Rails.configuration.x.system.dragonfly_url_scheme,
-              url_host: Rails.configuration.x.system.dragonfly_bucket,
-              root_path: Rails.configuration.x.system.dragonfly_root_path,
-              bucket_name: Rails.configuration.x.system.dragonfly_bucket,
+              url_scheme: Rails.configuration.x.dmproadmap.dragonfly_url_scheme,
+              url_host: Rails.configuration.x.dmproadmap.dragonfly_bucket,
+              root_path: Rails.configuration.x.dmproadmap.dragonfly_root_path,
+              bucket_name: Rails.configuration.x.dmproadmap.dragonfly_bucket,
               use_iam_profile: true
   end
 end

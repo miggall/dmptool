@@ -5,7 +5,7 @@ module DMPRoadmap
   class Application < Rails::Application
 
     WickedPdf.config = {
-      exe_path: Rails.configuration.x.system.wkhtmltopdf_path
+      exe_path: Rails.configuration.x.dmproadmap.wkhtmltopdf_path
     }
 
   end

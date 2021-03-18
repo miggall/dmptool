@@ -62,8 +62,14 @@ default: &default
   # Google Analytics config. Tracker root is the base key for your application
   google_analytics_tracker_root:
 
-  # The OpenAire API is used to retrieve metadata standards for a specific question type
+  # The OpenAire API is used to retrieve grant ids on the Project Details page
   openaire_active: false
+
+  # The re3data API is used to retrieve repositories for selection on the Research Outputs page
+  re3data_active: false
+
+  # The SPDX License API is used to license information for selection on the Research Outputs page
+  spdx_active: false
 
   # ORCID provides identifiers for people.
   # See the public api docs https://info.orcid.org/documentation/features/public-api/
