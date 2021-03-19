@@ -50,7 +50,7 @@ default: &default
   server_host: "localhost"
   port: "3000"
   web_concurrency: 2
-  cookie_key: "_dmproadmap_session"
+  cookie_key: "_dmptool_session"
   rails_log_to_stdout: true
   rails_max_threads: 5
   rails_serve_static_files: true
@@ -222,7 +222,7 @@ default: &default
 
   # Uncomment the following line if you want to redirect your users to an
   # organisational contact/help page instead of using the built-in contact_us form
-  contact_us_url: "https//example.org/default_contact_us_page"
+  # contact_us_url: "https//example.org/default_contact_us_page"
 
   # Your organisation name, used in various places throught the application
   organisation_name: "University of California Curation Center (UC3)"
@@ -251,7 +251,9 @@ default: &default
   # once the menu opens, click the 'share or embed' link and the 'embed' tab on
   # the dialog window that opens. DO NOT place the entire <iframe> tag below, just
   # the address!
-  organisation_google_maps_link: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3152.2214785789347!2d-122.26972218390863!3d37.80828097975344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808f80b28e26ec6d%3A0x61d8b66ecd97a18c!2s415+20th+St%2C+Oakland%2C+CA+94612!5e0!3m2!1sen!2sus!4v1479338425002"
+  organisation_google_maps_link: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3152.472655341696!2d-122.2735146846817!3d37.8023965797545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808f80b6a4eac021%3A0xc990eee75729175f!2s1111%20Franklin%20St%2C%20Oakland%2C%20CA%2094607!5e0!3m2!1sen!2sus!4v1616173914168!5m2!1sen!2sus"
+
+  # organisation_google_maps_link: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3152.2214785789347!2d-122.26972218390863!3d37.80828097975344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808f80b28e26ec6d%3A0x61d8b66ecd97a18c!2s415+20th+St%2C+Oakland%2C+CA+94612!5e0!3m2!1sen!2sus!4v1479338425002"
 
   # =====================
   # = API configuration =

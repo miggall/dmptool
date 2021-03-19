@@ -62,6 +62,26 @@ module DMPRoadmap
     # organisational contact/help page instead of using the built-in contact_us form
     config.x.organisation.contact_us_url = Rails.configuration.x.dmproadmap.contact_us_url
 
+    # -------------------- #
+    # APPLICATION SETTINGS #
+    # -------------------- #
+
+    # Used throughout the system via ApplicationService.application_name
+    config.x.application.name = Rails.configuration.x.dmproadmap.name
+    # Used as the default domain when 'archiving' (aka anonymizing) a user account
+    # for example `jane.doe@uni.edu` becomes `1234@removed_accounts-example.org`
+    config.x.application.archived_accounts_email_suffix = Rails.configuration.x.dmproadmap.archived_accounts_email_suffix
+    # Available CSV separators, the default is ','
+    config.x.application.csv_separators = Rails.configuration.x.dmproadmap.csv_separators
+    # The largest page size allowed in requests to the API (all versions)
+    config.x.application.api_max_page_size = 100
+    # The link to the API documentation - used in emails about the API
+    config.x.application.api_documentation_urls = Rails.configuration.x.dmproadmap.api_documentation_urls
+    # The links that appear on the home page. Add any number of links
+    config.x.application.welcome_links = Rails.configuration.x.dmproadmap.welcome_links
+    # The default user email preferences used when a new account is created
+    config.x.application.preferences = Rails.configuration.x.dmproadmap.preferences
+
     # ------------------- #
     # SHIBBOLETH SETTINGS #
     # ------------------- #
