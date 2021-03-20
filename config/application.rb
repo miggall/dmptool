@@ -68,9 +68,8 @@ module DMPRoadmap
     # Set the default host for mailer URLs
     config.action_mailer.default_url_options = { host: Socket.gethostname.to_s }
 
+    # Load AnywayConfig class, but not if running `rails credentials:edit`
     unless defined?(::Rails::Command::CredentialsCommand)
-      #config.x.system = SystemConfig.new
-      #config.x.application = ApplicationConfig.new
       config.x.dmproadmap = DmproadmapConfig.new
     end
   end

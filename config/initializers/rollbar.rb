@@ -83,6 +83,6 @@ if defined?(Rollbar)
     # environment variable like this: `ROLLBAR_ENV=staging`. This is a recommended
     # setup for Heroku. See:
     # https://devcenter.heroku.com/articles/deploying-to-a-custom-rails-environment
-    config.environment = Rails.configuration.x.system.rollbar_env.presence || Rails.env
+    config.environment = Rails.configuration.x.dmproadmap.rollbar_env.presence || Rails.env
   end
 end

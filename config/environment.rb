@@ -14,7 +14,7 @@ Rails.application.configure do
   # Use a different logger for distributed setups.
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
-  if Rails.configuration.x.system.rails_log_to_stdout.present?
+  if Rails.configuration.x.dmproadmap.rails_log_to_stdout.present?
     logger           = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
