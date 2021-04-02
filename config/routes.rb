@@ -4,6 +4,17 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  # Doorkeeper Oauth Authentication
+  use_doorkeeper do
+    skip_controllers :applications, :authorized_applications
+  end
+  # This is a little hacky, it doesn't appear that we're using the Devise controllers/workflow
+  # as prescribed. We should be able to just send the user to the :new_user_session_path but
+  # this is redirected to the :root_path. So we have a simple oauth specific version that handles
+  # the sign in for the Doorkeeper Oauth workflow
+  get "oauth/sign_in", as: :new_user_oauth_session, controller: "oauths", action: "new"
+
+  # Devise Authentication
   devise_for(:users, controllers: {
                registrations: "registrations",
                passwords: "passwords",
@@ -238,6 +249,21 @@ Rails.application.routes.draw do
     namespace :v1 do
       get :heartbeat, controller: "base_api"
       post :authenticate, controller: "authentication"
+
+      resources :plans, only: %i[create show index]
+      resources :templates, only: [:index]
+    end
+
+    # API V2 is similar to V1 except that it integrates with the Doorkeeper gem (see route defs above)
+    # for handling AuthN and AuthZ
+    #
+    # Requests can be made either directly by a ApiClient or User using the :client_credentials grant_type
+    # or on behalf of another user (via Oauth) using the :authorization_code grant_type
+    #
+    # See the config/initializers/doorkeep.rb file for info on how the Auth works
+    namespace :v2 do
+      get :heartbeat, controller: :base_api
+      get :me, controller: :base_api
 
       resources :plans, only: %i[create show index]
       resources :templates, only: [:index]
