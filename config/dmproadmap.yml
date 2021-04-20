@@ -118,7 +118,7 @@ default: &default
   dmphub_client_secret:
 
   # Google Analytics config. Tracker root is the base key for your application
-  google_analytics_tracker_root:
+  google_analytics_tracker_root: "DMPTool"
 
   # The OpenAire API is used to retrieve grant ids on the Project Details page
   openaire_active: false
@@ -256,8 +256,6 @@ default: &default
   # the address!
   organisation_google_maps_link: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3152.472655341696!2d-122.2735146846817!3d37.8023965797545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808f80b6a4eac021%3A0xc990eee75729175f!2s1111%20Franklin%20St%2C%20Oakland%2C%20CA%2094607!5e0!3m2!1sen!2sus!4v1616173914168!5m2!1sen!2sus"
 
-  # organisation_google_maps_link: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3152.2214785789347!2d-122.26972218390863!3d37.80828097975344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808f80b28e26ec6d%3A0x61d8b66ecd97a18c!2s415+20th+St%2C+Oakland%2C+CA+94612!5e0!3m2!1sen!2sus!4v1479338425002"
-
   # =====================
   # = API configuration =
   # =====================
@@ -269,6 +267,7 @@ default: &default
   api_documentation_urls:
     v0: "https://github.com/CDLUC3/dmptool/wiki/api-v0-documentation"
     v1: "https://github.com/CDLUC3/dmptool/wiki/api-v1-documentation"
+    v2: "https://github.com/CDLUC3/dmptool/wiki/api-v2-documentation"
 
   # =============================
   # = Static page configuration =

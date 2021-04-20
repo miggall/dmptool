@@ -54,6 +54,7 @@ class DmproadmapConfig < Anyway::Config
               :locales_gettext_join_character,
               :locales_i18n_join_character,
 
+              :restrict_orgs,
               :max_number_links_funder,
               :max_number_links_org,
               :max_number_links_sample_plan,
