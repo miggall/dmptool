@@ -86,7 +86,7 @@ default: &default
 
   # Security configuration used by the Devise gem to encrypt/decrypt passwords
   # See https://github.com/heartcombo/devise
-  #devise_pepper: "[add your unique value by running `rails secret` and pasting the response here]"
+  devise_secret:
   devise_pepper:
 
   # ==========================================

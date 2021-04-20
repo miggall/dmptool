@@ -15,10 +15,6 @@ Devise.setup do |config|
 
   config.stretches = Rails.env.test? ? 1 : 10
 
-p "DEVISE USING:"
-p Rails.configuration.x.dmproadmap.devise_secret
-p Rails.configuration.x.dmproadmap.devise_pepper
-
   config.secret_key = Rails.configuration.x.dmproadmap.devise_secret
   config.pepper = Rails.configuration.x.dmproadmap.devise_pepper
 
