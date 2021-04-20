@@ -28,24 +28,8 @@ set :keep_releases, 5
 
 namespace :deploy do
   before :compile_assets, "deploy:retrieve_credentials"
-  before :compile_assets, "deploy:retrieve_master_key"
   after :deploy, "git:version"
   after :deploy, "cleanup:remove_example_configs"
-
-  desc 'Retrieve master.key contents from SSM ParameterStore'
-  task :retrieve_master_key do
-    on roles(:app), wait: 1 do
-      if ENV.has_key?('SSM_ROOT_PATH')
-        begin
-          ssm = Uc3Ssm::ConfigResolver.new
-          master_key = ssm.parameter_for_key('master_key')
-          ENV['RAILS_MASTER_KEY'] = master_key.chomp unless master_key.nil? or master_key.empty?
-        rescue => e
-          ActiveSupport::Logger.new($stdout).warn("Could not retrieve master_key from SSM Parameter Store: #{e.full_message}")
-        end
-      end
-    end
-  end
 
   desc 'Retrieve encrypted crendtials file from SSM ParameterStore'
   task :retrieve_credentials do
