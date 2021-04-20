@@ -83,6 +83,8 @@ module DMPRoadmap
     config.x.application.preferences = Rails.configuration.x.dmproadmap.preferences
     # Setting to only take orgs from local and not allow on-the-fly creation
     config.x.application.restrict_orgs = Rails.configuration.x.dmproadmap.restrict_orgs
+    # The location of the dmptool blog
+    config.x.application.blog_rss = Rails.configuration.x.dmproadmap.blog_rss
 
     # ------------------- #
     # SHIBBOLETH SETTINGS #
