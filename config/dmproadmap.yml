@@ -204,6 +204,9 @@ default: &default
   # Available CSV separators, the default is ','
   csv_separators: [",", "|", "#"]
 
+  # Setting to only take orgs from local and not allow on-the-fly creation
+  restrict_orgs: false
+
   # Determines the number of links a funder is allowed to add to their template
   max_number_links_funder: 5
   # Maximum number of links to display for an Org
