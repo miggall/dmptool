@@ -100,7 +100,6 @@ class DmproadmapConfig < Anyway::Config
               :rollbar_access_token,
               :ror_active,
 
-              :secret_key_base,
               :server_host,
               :shibboleth_enabled,
               :shibboleth_login_url,
@@ -123,8 +122,8 @@ class DmproadmapConfig < Anyway::Config
            :database_adapter,
            :database_host,
            :database_username,
-           #:devise_secret,
-           #:devise_pepper,
+           :devise_secret,
+           :devise_pepper,
            :do_not_reply_email,
            :doi_minting,
 
@@ -139,8 +138,8 @@ class DmproadmapConfig < Anyway::Config
 
            :name,
 
-           #:orcid_client_id,
-           #:orcid_client_secret,
+           :orcid_client_id,
+           :orcid_client_secret,
            :orcid_sandbox,
 
            :port,
@@ -153,7 +152,6 @@ class DmproadmapConfig < Anyway::Config
            :re3data_active,
            :recaptcha_enabled,
 
-           #:secret_key_base,
            :server_host,
            :shibboleth_enabled,
            :spdx_active

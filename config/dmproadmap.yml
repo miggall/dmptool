@@ -13,10 +13,10 @@ default: &default
   # For more info about AnywayConfig, see: https://github.com/palkan/anyway_config
   #
   # Blank entries in this file are by design. AnywayConfig allows us to specify required config
-  # variables. If for example secret_key_base is not found in one of the locations mentioned above,
+  # variables. If for example database_password is not found in one of the locations mentioned above,
   # then the application will fail to startup.
   # For example:
-  #  "Anyway::Config::ValidationError: The following config parameters are missing or empty: secret_key_base
+  #  "Anyway::Config::ValidationError: The following config parameters are missing or empty: database_password
   #
   # If you are not on an AWS EC2 environment and/or do not have access to SSM then you will see the
   # following warnings. They can be ignored.
@@ -29,7 +29,7 @@ default: &default
   #  "Loading DmproadmapConfig:"
   # "---------------------------------------------------"
   #
-  # {"secret_key_base"=>
+  # {"database_password"=>
   #   {:value=> "blah...blah...blah",
   #    :source=>{:type=>:secrets}},
   #  "server_host"=>
@@ -41,10 +41,6 @@ default: &default
   # ============================
   # = Base Rails configuration =
   # ============================
-
-  # Used as the base secret for all MessageVerifiers in Rails, including the one protecting cookies.
-  # Add your unique value by running 'rails secret' and pasting the response here
-  secret_key_base:
 
   # See https://guides.rubyonrails.org/v5.0/configuring.html
   server_host: "localhost"
