@@ -8,6 +8,16 @@ module Dmptool
   module HomeController
 
     def render_home_page
+
+p "VARS IN X:"
+pp Rails.configuration.x.inspect
+
+p "================================================"
+p "================================================"
+
+p "VARS IN DMPROADMAP:"
+pp Rails.configuration.x.dmproadmap.inspect
+
       # Usage stats
       @stats = statistics
 
