@@ -14,6 +14,12 @@ require "csv"
 #
 # This file's name begins with an underscore so that it is processed first and its
 # values are available to all other initializers within this directory!
+#
+# DMPTool - Note that this file has become redundant now that we are using AnywayConfig
+#           it currently acts as a bridge between the config/configs/dmproadmap_config.rb
+#           and the baseline DMPRoadmap code. If we can convince DMPRoadmap to begin using
+#           AnywayConfig then this file can be deleted and all of it's referenced variables
+#           can be updated to point directly at the AnywayConfig file.
 module DMPRoadmap
 
   class Application < Rails::Application

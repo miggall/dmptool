@@ -8,13 +8,6 @@ module Dmptool
   module HomeController
 
     def render_home_page
-
-Rails.logger.warn "VARS IN X:"
-Rails.logger.warn Rails.configuration.x.inspect
-
-Rails.logger.warn "VARS IN DMPROADMAP:"
-Rails.logger.warn Rails.configuration.x.dmproadmap.inspect
-
       # Usage stats
       @stats = statistics
 

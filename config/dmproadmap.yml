@@ -37,6 +37,13 @@ default: &default
   #    :source=>{:type=>:env, :key=>"DMPROADMAP_SERVER_HOST"}},
   #  "port"=>
   #    {:value=>"3000", :source=>{:type=>:yml, :path=>"config/dmproadmap.yml"}}}
+  #
+  # In Summary:
+  #   If an entry here is blank then you MUST define it in the credentials.yml.enc (preferred) or in an
+  #   SSM variable (as `/uc3/dmp/tool/[env]/dmproadmap/[variable_name]`)
+  #
+  #   If you would like to override one of the other values in this file then you should define it as
+  #   an SSM variable (as `/uc3/dmp/tool/[env]/dmproadmap/[variable_name]`)
 
   # ============================
   # = Base Rails configuration =
