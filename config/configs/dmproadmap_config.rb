@@ -33,6 +33,7 @@ class DmproadmapConfig < Anyway::Config
               :dmphub_url,
               :dmphub_client_id,
               :dmphub_client_secret,
+              :dmphub_landing_page_url,
               :do_not_reply_email,
               :doi_minting,
               :dragonfly_aws,
