@@ -15,7 +15,7 @@ Devise.setup do |config|
 
   config.stretches = Rails.env.test? ? 1 : 10
 
-  # config.secret_key = Rails.configuration.x.dmproadmap.devise_secret
+  config.secret_key = Rails.configuration.x.dmproadmap.devise_secret
   config.pepper = Rails.configuration.x.dmproadmap.devise_pepper
 
   config.reconfirmable = false

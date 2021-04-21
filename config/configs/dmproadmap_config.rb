@@ -123,7 +123,6 @@ class DmproadmapConfig < Anyway::Config
            :database_adapter,
            :database_host,
            :database_username,
-           :devise_secret,
            :devise_pepper,
            :do_not_reply_email,
            :doi_minting,

@@ -9,14 +9,11 @@ module Dmptool
 
     def render_home_page
 
-p "VARS IN X:"
-pp Rails.configuration.x.inspect
+Rails.logger.warn "VARS IN X:"
+Rails.logger.warn Rails.configuration.x.inspect
 
-p "================================================"
-p "================================================"
-
-p "VARS IN DMPROADMAP:"
-pp Rails.configuration.x.dmproadmap.inspect
+Rails.logger.warn "VARS IN DMPROADMAP:"
+Rails.logger.warn Rails.configuration.x.dmproadmap.inspect
 
       # Usage stats
       @stats = statistics
