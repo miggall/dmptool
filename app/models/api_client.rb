@@ -31,6 +31,7 @@ class ApiClient < ApplicationRecord
   include DeviseInvitable::Inviter
   include Subscribable
   include ::Doorkeeper::Orm::ActiveRecord::Mixins::Application
+  include ::Doorkeeper::Models::Scopes
 
   extend UniqueRandom
 
@@ -40,10 +41,10 @@ class ApiClient < ApplicationRecord
 
   belongs_to :org, optional: true
 
-  has_many :plans
-
-  has_many :access_tokens, class_name: '::Doorkeeper::AccessToken',
-                           foreign_key: :resource_owner_id,
+  # Access Tokens are created when an ApiClient authenticates themselves and is then used instead
+  # of credentials when calling the API.
+  has_many :access_tokens, class_name: "::Doorkeeper::AccessToken",
+                           foreign_key: :application_id,
                            dependent: :delete_all
 
   # ===============
@@ -61,6 +62,7 @@ class ApiClient < ApplicationRecord
   # = Compatibility =
   # =================
 
+  # These aliases provide backward compatibility for API V1
   alias_attribute :client_id, :uid
   alias_attribute :client_secret, :secret
 

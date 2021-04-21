@@ -9,8 +9,7 @@
                         form: f,
                         id_field: :id,
                         default_org: nil,
-                        orgs: Org.includes(identifiers: [:identifier_scheme])
-                                 .participating.select { |org| org.shibbolized? },
+                        orgs: Org.includes(identifiers: [:identifier_scheme]).shibbolized,
                         required: false,
                         label: _("Look up your institution here")
                     } %>

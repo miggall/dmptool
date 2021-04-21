@@ -15,11 +15,10 @@ module Api
 
       class Scope
 
-        attr_reader :client, :scope
+        attr_reader :client
 
-        def initialize(client, scope)
+        def initialize(client)
           @client = client
-          @scope = scope
         end
 
         ## Return the templates to a given client depending on the context

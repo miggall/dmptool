@@ -83,6 +83,12 @@ module DMPRoadmap
     config.x.application.preferences = Rails.configuration.x.dmproadmap.preferences
     # Setting to only take orgs from local and not allow on-the-fly creation
     config.x.application.restrict_orgs = Rails.configuration.x.dmproadmap.restrict_orgs
+    # The link to our release notes
+    config.x.application.release_notes_url = Rails.configuration.x.dmproadmap.release_notes_url
+    # The link to our issues list
+    config.x.application.issue_list_url = Rails.configuration.x.dmproadmap.issue_list_url
+    # The link to our Listserv
+    config.x.application.user_group_subscription_url = Rails.configuration.x.dmproadmap.user_group_subscription_url
     # The location of the dmptool blog
     config.x.application.blog_rss = Rails.configuration.x.dmproadmap.blog_rss
 
@@ -197,6 +203,11 @@ module DMPRoadmap
     # DOI Minting
     # ----------- #
     config.x.allow_doi_minting = Rails.configuration.x.dmproadmap.doi_minting
+
+    # ------ #
+    # DMPHub #
+    # ------ #
+    config.x.dmphub_landing_page_url = ENV["DMPHUB_LANDING_PAGE_URL"]
 
   end
 

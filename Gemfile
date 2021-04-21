@@ -128,6 +128,7 @@ gem "omniauth-rails_csrf_protection"
 gem "doorkeeper", "~> 5.5"
 
 # A ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard.
+# https://github.com/jwt/ruby-jwt
 gem "jwt"
 
 # Gems for repository integration

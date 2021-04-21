@@ -3,29 +3,38 @@
 </header>
 
 <main role="main">
+  <%# Set a session variable so we can notify the application_controller that this is an OAuth workflow %>
+  <% session["oauth-referer"] = oauth_authorization_path(client_id: @pre_auth.client.uid,
+                                                          redirect_uri: @pre_auth.redirect_uri,
+                                                          state: @pre_auth.state,
+                                                          response_type: @pre_auth.response_type,
+                                                          scope: @pre_auth.scope,
+                                                          code_challenge: @pre_auth.code_challenge,
+                                                          code_challenge_method: @pre_auth.code_challenge_method) %>
+
   <% if @current_resource_owner.present? %>
     <p class="h4">
-      <%=  sanitize(_("%{application} wants to access your DMPs. Please confirm this action.") % { application: "<strong class=\"text-info\">#{@pre_auth.client.name}</strong>" }) %>
+      <%=  sanitize(_("%{application} wants to access your DMPs. Please confirm this action.") % { application: "<strong class=\"text-info\">#{@pre_auth.client.name.humanize}</strong>" }) %>
     </p>
   <% else %>
     <p class="h4">
-      <%=  sanitize(_("%{application} wants to access your DMPs. Please sign in to approve.") % { application: "<strong class=\"text-info\">#{@pre_auth.client.name}</strong>" }) %>
+      <%=  sanitize(_("%{application} wants to access your DMPs. Please sign in to verify your account.") % { application: "<strong class=\"text-info\">#{@pre_auth.client.name.humanize}</strong>" }) %>
     </p>
   <% end %>
 
-  <% if @pre_auth.scopes.count > 0 %>
-    <div id="oauth-permissions">
-      <p><%= t('.able_to') %>:</p>
-
-      <ul class="text-info">
-        <% @pre_auth.scopes.each do |scope| %>
-          <li><%= t scope, scope: [:doorkeeper, :scopes] %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
   <% if @current_resource_owner.present? %>
+    <% if @pre_auth.scopes.count > 0 %>
+      <div id="oauth-permissions">
+        <p><%= t('.able_to') %>:</p>
+
+        <ul class="text-info">
+          <% @pre_auth.scopes.each do |scope| %>
+            <li><%= user_label_for_scope(scope) %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <div class="actions">
       <%= form_tag oauth_authorization_path, method: :post do %>
         <%= hidden_field_tag :client_id, @pre_auth.client.uid %>
@@ -57,5 +66,7 @@
     <% end %>
 
     <%= render partial: "shared/sign_in_form", locals: { resource: User.new } %>
+
+    <p class="red"><%= flash[:alert] %></p>
   <% end %>
 </main>

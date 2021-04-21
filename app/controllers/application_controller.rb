@@ -61,22 +61,20 @@ class ApplicationController < ActionController::Base
     referer_path = URI(request.referer).path unless request.referer.nil?
     # ---------------------------------------------------------
     # Start DMPTool Customization
-    # Added get_started_path` to if statement below
+    # Added get_started_path` to if statement below and check for oauth-referer in the session
+    # if its present then this was an OAuth sign in to authorize an ApiClient so continue on
+    # with the OAuth workflow
     # ---------------------------------------------------------
-    if oauth_flow?
-
-p "REDIRECTING: #{oauth_authorization_url}"
-
-      # The user is in an OAuth authroization workflow so let that workflow continue
-      oauth_authorization_url
-
-    elsif from_external_domain? || referer_path.eql?(new_user_session_path) ||
+    if from_external_domain? || referer_path.eql?(new_user_session_path) ||
        referer_path.eql?(new_user_registration_path) ||
        referer_path.eql?(get_started_path) ||
        referer_path.nil?
       # End DMPTool Customization
       # ---------------------------------------------------------
-      root_path
+      oauth_path = session["oauth-referer"]
+      session.delete("oauth-referer") if oauth_path.present?
+
+      oauth_path.present? ? oauth_path : root_path
     # ---------------------------------------------------------
     # Start DMPTool Customization
     # Catch user's coming in from the Org branded sign in /create page
@@ -212,16 +210,6 @@ p "REDIRECTING: #{oauth_authorization_url}"
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[firstname surname org_id])
-  end
-
-  # Determine whether the session creation is part of an OAuth authorization_code grant flow
-  # In other words, a User authenticating to allow an ApiClient permission to access their data
-  def oauth_flow?
-    api_client = ApiClient.where("LOWER(redirect_uri) LIKE ?", "#{session[:redirect_uri]}%").first
-
-p "OAUTH FLOW CHECK: sess: #{session[:redirect_uri]}, client: #{api_client}, referer: #{request.referer} == #{new_user_oauth_session_url}"
-
-    request.referer == new_user_oauth_session_url && api_client.present?
   end
 
 end

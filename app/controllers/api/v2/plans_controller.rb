@@ -6,11 +6,21 @@ module Api
 
     class PlansController < BaseApiController
 
+      include ::ConditionsHelper
+
+      respond_to :json, :pdf
+
+      # If the Resource Owner (aka User) is in the Doorkeeper AccessToken then it is an authorization_code
+      # token and we need to ensure that the ApiClient is authorized for the relevant Scope
+      before_action -> { doorkeeper_authorize!(:read_dmps) if @resource_owner.present? }, only: %i[index show]
+      before_action -> { doorkeeper_authorize!(:create_dmps) if @resource_owner.present? }, only: %i[create]
+
       # GET /api/v2/plans
       # -----------------
       def index
-        # See the Policy for details on what Plans are returned to the Caller
-        plans = Api::V2::PlansPolicy::Scope.new(@client, @resource_owner, Plan).resolve
+        # See the Policy for details on what Plans are returned to the Caller based on the AccessToken
+        plans = Api::V2::PlansPolicy::Scope.new(@client, @resource_owner).resolve
+
         if plans.present? && plans.any?
           @items = paginate_response(results: plans)
           @minimal = true
@@ -23,12 +33,34 @@ module Api
       # GET /api/v2/plans/:id
       # ---------------------
       def show
-        plans = Api::V2::PlansPolicy::Scope.new(@client, @resource_owner, Plan).resolve
-                                           .where(id: params[:id]).limit(1)
+        # See the Policy for details on what Plans are returned to the Caller based on the AccessToken
+        @plan = Api::V2::PlansPolicy::Scope.new(@client, @resource_owner).resolve
+                                           .select { |plan| plan.id = params[:id] }.first
 
-        if plans.present? && plans.any?
-          @items = paginate_response(results: plans)
-          render "/api/v2/plans/index", status: :ok
+        if @plan.present?
+          respond_to do |format|
+            format.pdf do
+              prep_for_pdf
+
+              render pdf: @file_name,
+                     margin: @formatting[:margin],
+                     footer: {
+                       center: _("Created using %{application_name}. Last modified %{date}") % {
+                         application_name: ApplicationService.application_name,
+                         date: l(@plan.updated_at.to_date, format: :readable)
+                       },
+                       font_size: 8,
+                       spacing: (Integer(@formatting[:margin][:bottom]) / 2) - 4,
+                       right: "[page] of [topage]",
+                       encoding: "utf8"
+                     }
+            end
+
+            format.json do
+              @items = paginate_response(results: [@plan])
+              render "/api/v2/plans/index", status: :ok
+            end
+          end
         else
           render_error(errors: [_("Plan not found")], status: :not_found)
         end
@@ -155,6 +187,35 @@ module Api
         user
       end
 
+      def prep_for_pdf
+        return false unless @plan.present?
+
+        # We need to eager loadd the plan to make this more efficient
+        @plan = Plan.includes(:org, :research_outputs, roles: [:user],
+                              contributors: [:org, identifiers: [:identifier_scheme]],
+                              identifiers: [:identifier_scheme])
+                    .find_by(id: @plan.id)
+
+        # Include everything by default
+        @show_coversheet         = true
+        @show_sections_questions = true
+        @show_unanswered         = true
+        @show_custom_sections    = true
+        @show_research_outputs   = @plan.research_outputs.any?
+        @public_plan             = @plan.publicly_visible?
+        @formatting =
+
+        @hash           = @plan.as_pdf(@show_coversheet)
+        @formatting     = @plan.settings(:export).formatting || @plan.template.settings(:export).formatting
+        @selected_phase = @plan.phases.order("phases.updated_at DESC")
+                               .detect { |p| p.visibility_allowed?(@plan) }
+
+        # limit the filename length to 100 chars. Windows systems have a MAX_PATH allowance
+        # of 255 characters, so this should provide enough of the title to allow the user
+        # to understand which DMP it is and still allow for the file to be saved to a deeply
+        # nested directory
+        @file_name = Zaru.sanitize!(@plan.title).strip.gsub(/\s+/, "_")[0, 100]
+      end
     end
 
   end

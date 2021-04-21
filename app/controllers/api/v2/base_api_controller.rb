@@ -6,6 +6,12 @@ module Api
 
     class BaseApiController < ApplicationController
 
+      # We use the Doorkeeper gem to provide OAuth2 provider functionality for this application. An
+      # ApiClient is able to access this API via:
+      #   - :client_credentials - which allows them to access publicly accessible data
+      #   - :authorization_code - to gain authorization from a User to access their data
+      #
+      # See the API wiki for full details: https://github.com/CDLUC3/dmptool/wiki/api-documentation
       include ::Doorkeeper::Helpers::Controller
 
       respond_to :json
@@ -13,13 +19,13 @@ module Api
       # Skipping the standard Rails authenticity tokens passed in UI
       skip_before_action :verify_authenticity_token
 
-      # Authorization and Token parsing
-      before_action :user_from_token, :client_from_token, :scopes_from_token
-      before_action :oauth_authorize!, except: %i[heartbeat]
+      # Parse the Doorkeeper token to get the APIClient and User
+      before_action :authorize_request, except: %i[heartbeat]
+      before_action :parse_doorkeeper_token
 
       # Prep default instance variables for views
       before_action :base_response_content
-      before_action :pagination_params, except: %i[heartbeat me]
+      before_action :pagination_params, except: %i[heartbeat]
 
       # Parse the incoming JSON
       before_action :parse_request, only: %i[create update]
@@ -34,27 +40,6 @@ module Api
       # Used as a status check for external systems to determine if we are online (does not require auth)
       def heartbeat
         render "/api/v2/heartbeat", status: :ok
-      end
-
-      # GET api/v2/me
-      # -------------
-      # Used by the Doorkeeper OAuth workflow. Once the caller has been authenticated this route can be
-      # called to access info about the Client or the ResourceOwner depending on the context
-      def me
-        return {} unless doorkeeper_token.present?
-
-        if @resource_owner.present?
-          render json: {
-            email: @resource_owner.email,
-            token: doorkeeper_token.token,
-            plan_count: @resource_owner.plans&.select { |plan| plan.complete && !plan.is_test? }&.length || 0
-          }
-        else
-          render json: {
-            name: @client.name,
-            token: doorkeeper_token.token
-          }
-        end
       end
 
       protected
@@ -81,44 +66,23 @@ module Api
       # = Callbacks =
       # =============
 
-      # Authorize the request based on the context of the token:
-      # If the :doorkeeper_token has a :resource_owner then it's an :authorization_code request
-      # meaning that its a request for data on behalf of a user; otherwise this is a :client_credentials
-      # request meaning that the ApiClient or User has requested data directly (not specific to another User)
-      def oauth_authorize!
+      # Only requests with a valid Doorkeeper token are acceptable
+      def authorize_request
+        return true if doorkeeper_token.present?
 
-p "RO:"
-p @resource_owner.inspect
-p "CLIENT:"
-p @client.inspect
-
-        @resource_owner.present? ? grant_exists? : true #doorkeeper_authorize!
+        render_error(errors: "token is invalid, expired or has been revoked", status: :unauthorized)
       end
 
-      # A request on behalf of a resource owner (aka User) requires an access grant
-      def grant_exists?
-        return false unless @resource_owner.present?
+      # Extract the ApiClient (aka Application), User (aka Resource Owner) and Scopes from Doorkeeper AccessToken
+      def parse_doorkeeper_token
+        return nil unless doorkeeper_token
 
-        grants = @resource_owner.access_grants.select do |grant|
-          grant.application_id == @client.id && grant.scopes.include?(@scopes)
-        end
-        grants.any?
-      end
+        @client = ApiClient.find_by(id: doorkeeper_token.application_id)
 
-      # Find the User from the Doorkeeper token
-      def user_from_token
         @resource_owner = User.includes(:plans, :access_grants)
-                              .find_by(id: doorkeeper_token.resource_owner_id) if doorkeeper_token
-      end
+                              .find_by(id: doorkeeper_token.resource_owner_id)
 
-      # Fetch the ApiClient from the Doorkeeper token
-      def client_from_token
-        @client = ApiClient.find_by(id: doorkeeper_token.application_id) if doorkeeper_token
-      end
-
-      # Fetch the scopes from the Doorkeeper token
-      def scopes_from_token
-        @scopes = doorkeeper_token.scopes if doorkeeper_token
+        @scopes = doorkeeper_token.scopes
       end
 
       # Set the generic application and caller variables used in all responses

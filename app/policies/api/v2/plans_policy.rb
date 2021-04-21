@@ -16,12 +16,11 @@ module Api
 
       class Scope
 
-        attr_reader :client, :scope
+        attr_reader :client
 
-        def initialize(client, resource_owner, scope)
+        def initialize(client, resource_owner)
           @client = client
           @resource_owner = resource_owner
-          @scope = scope
         end
 
         ## Return the visible plans (via the API) to a given client depending on the context
@@ -39,16 +38,18 @@ module Api
         #       - (when an admin) all Plans from users of their organisation
         #
         def resolve
-          # Only return publicly visible Plans if the caller did not request Plans for a specific User
+          # If the resource_owner is present then return their specific Plans
           return plans_for_user(user: @resource_owner, complete: true, mine: true) if @resource_owner.present?
 
-          plans = Plan.publicly_visible
-          # If the caller is an ApiClient return the Client's Plans
-          return (plans += plans_for_api_client).flatten.compact.uniq if @client.is_a?(ApiClient)
+          # If the Client is a User then the person Auth-ed via api_token so return their Plans
+          return plans_for_org_admin + plans_for_user(user: @client) if @client.is_a?(User)
 
-          # Otherwise return the User's Plans
-          plans += plans_for_org_admin + plans_for_user(user: @client)
-          plans.flatten.compact.uniq
+          # If this is a :trusted ApiClient then return all plans
+          return Plan.where.not(visibility: Plan.visibilities[:is_test]) if @client.trusted?
+
+          # If the caller is an ApiClient return all of the public plans and any they subscribe to
+          plans = Plan.publicly_visible
+          (plans += plans_for_api_client).flatten.compact.uniq
         end
 
         private
@@ -58,7 +59,7 @@ module Api
           plans = user.plans.reject { |plan| plan.is_test? }
           plans = complete ? plans.select { |plan| plan.complete? } : plans
           plans += user.org.plans.organisationally_visible unless mine
-          plans.flatten.compact.uniq
+          plans.to_a.flatten.compact.uniq
         end
 
         # Fetch all of the Plans that belong to the Admin's Org
@@ -66,11 +67,11 @@ module Api
           @client.can_org_admin? ? @client.org.plans.reject { |plan| plan.is_test? } : []
         end
 
-        # Fetch all of the Plans created by the ApiClient or any that belong to its associated Org
+        # Fetch all of the Plans the ApiClient subscribes to or any that belong to its associated Org
         def plans_for_api_client
-          plans = @client.plans
+          plans = @client.subscriptions.map(&:plan)
           plans += @client.org.plans if @client.org.present?
-          plans.flatten.compact.uniq
+          plans.to_a.flatten.compact.uniq
         end
 
       end
