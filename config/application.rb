@@ -28,7 +28,6 @@ if ENV.has_key?('SSM_ROOT_PATH')
     ActiveSupport::Logger.new($stdout).warn("Could not retrieve master_key from SSM Parameter Store: #{e.full_message}")
   end
 end
-# pp "RAILS_MASTER_KEY: #{ENV['RAILS_MASTER_KEY']}"
 
 module DMPRoadmap
 

@@ -4,7 +4,6 @@ default: &default
   #   - dmproadmap.yml (this file)
   #   - secrets.yml
   #   - credentials.yml.enc
-  #   - AWS SSM variables (if running on an AWS EC2 instance)
   #   - ENV variables (from either the .env file or ENV variables)
   #
   # If a variable is defined in the dmproadmap.yml and also in the credentials.yml.enc, the value
@@ -18,10 +17,6 @@ default: &default
   # For example:
   #  "Anyway::Config::ValidationError: The following config parameters are missing or empty: database_password
   #
-  # If you are not on an AWS EC2 environment and/or do not have access to SSM then you will see the
-  # following warnings. They can be ignored.
-  #   "UC3 SSM Error: SSM parameter name is not fully qualified and no ssm_root_path defined."
-  #
   # We have added a lib/tasks/utils/config.rake task file which can be used to help debug any config
   # issues. For example you can run `rails config:trace` which will return something like this (note:
   # ':secrets' is the Rails credentials file, :env is either an ENV of .env variable):
@@ -31,7 +26,7 @@ default: &default
   #
   # {"database_password"=>
   #   {:value=> "blah...blah...blah",
-  #    :source=>{:type=>:secrets}},
+  #    :source=>{:type=>:credentials, :store=>"config/credentials.yml.enc"}},
   #  "server_host"=>
   #   {:value=>"https://foo.bar",
   #    :source=>{:type=>:env, :key=>"DMPROADMAP_SERVER_HOST"}},
